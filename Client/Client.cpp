@@ -3,9 +3,11 @@
 
 #include "pch.h"
 #include <iostream>
+#include "../Server/Test.h"
 
 int main()
 {
+    Test t;
     std::cout << "Hello World!\n"; 
 }
 

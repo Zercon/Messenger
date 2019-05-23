@@ -10,15 +10,19 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
+
 #include <iostream>
 #include <stdint.h>
 #include <memory>
+#include <cstring>
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/thread.hpp>
 #include <boost/timer.hpp>
+
+#include <mysql.h>
 
 
 #endif //PCH_H

@@ -16,9 +16,14 @@ public:
 private:
 
     //function
-    void process_request();
+    void process_request(Packet&& packet);
+    void handle_register(Packet&& packet);
+    void handle_login(Packet&& packet);
+    void handle_ping(Packet&& packet);
+    void handle_request_list(Packet&& packet);
+    void handle_request_diologe(Packet&& packet);
 
-    std::shared_ptr<Packet> command;
+    //std::shared_ptr<Packet> command;
     boost::asio::ip::tcp::socket sock_;
     enum { max_msg = 1024 };
     int got_bytes;
