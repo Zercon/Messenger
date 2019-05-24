@@ -3,21 +3,19 @@
 
 #include "pch.h"
 #include "Controller.h"
-#include "Test.h"
 
 
 int main()
 {
-    setlocale(LC_ALL, ".1251");
-    Test t;
-    /*try {
+    //setlocale(LC_ALL, ".1251");
+    try {
         Controller controller;
         controller.start();
     }
     catch (std::exception ex) {
         std::cout << ex.what() << std::endl;
         return 1;
-    }*/
+    }
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

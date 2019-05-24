@@ -2,10 +2,13 @@
 #include "pch.h"
 #include "../libs/Packet.h"
 
+
 class talk_to_client : public boost::enable_shared_from_this<talk_to_client>
 {
 public:
-    talk_to_client(boost::asio::io_service& service): sock_(service) { }
+    talk_to_client(boost::asio::io_service& service): sock_(service) { 
+        
+    }
     std::string username() const { return username_; }
     void answer_to_client();
     void set_clients_changed() { clients_changed_ = true; }
@@ -13,8 +16,8 @@ public:
     bool timed_out() const;
     void stop();
     void read_request();
-private:
 
+private:
     //function
     void process_request(Packet&& packet);
     void handle_register(Packet&& packet);
@@ -32,5 +35,8 @@ private:
     std::string username_;
     bool clients_changed_;
     boost::posix_time::ptime last_ping;
+
+    //MySQL
+    //std::shared_ptr<mysqlx::Session> session_mysql_;
 };
 

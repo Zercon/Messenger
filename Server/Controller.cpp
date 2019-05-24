@@ -1,30 +1,23 @@
-#include "pch.h"
 #include "Controller.h"
 
 
 Controller::Controller()
 {
     link = mysql_init(0);
-
     if (!link)
     {
-        throw std::logic_error("Невозможно получить дискриптор!\n");
+        throw std::logic_error("Error: Невозможно получить дескриптор подключения к базе данных!");
     }
-
-    if (!mysql_real_connect(link, Host, User, Pass, DBase, 3306, 0, 0))
+    if (!mysql_real_connect(link, "localhost", "root", "12345", "messeneger", 0, 0, 0))
     {
-        mysql_close(link);
-        throw std::logic_error("Невозможно подключиться к Базе данных!\n");
+        throw std::logic_error("Невозможно подключиться к базе данных!");
     }
-
 }
 
 
 Controller::~Controller()
 {
-    if (!link) {
-        mysql_close(link);
-    }
+    mysql_close(link);
 }
 
 void Controller::start()
@@ -35,8 +28,41 @@ void Controller::start()
     threads.join_all();
 }
 
-bool Controller::querry()
+bool Controller::query(std::string&& query_str)
 {
+    MYSQL_RES *result = 0;
+    MYSQL_ROW row;
+
+    std::cout << "Query: " << query_str << std::endl;
+
+    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
+    {
+        mysql_close(link);
+        throw std::logic_error("Error: Невозможно провести запрос!");
+    }
+
+    if (mysql_query(link, query_str.c_str()))
+        // c_str() для string возвращает char-строку
+    {
+        throw std::logic_error("Невозможно провести запрос!");
+    }
+
+    // Извлечение результата
+    result = mysql_store_result(link);
+    if (!result)
+    {
+        throw std::logic_error("Извлечение результатов запроса завершилось аварийно!");
+        {
+            while (row = mysql_fetch_row(result))
+            {
+                std::cout << row[0] << std::endl;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
+    }
     return false;
 }
 

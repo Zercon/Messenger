@@ -15,20 +15,13 @@ public:
     ~Controller();
     void start();
 
-    static bool querry();
+    bool query(std::string&&);
 
 private:
     void accept_thread();
     void handle_clients_thread();
 
-    // For MySQL
     MYSQL *link;
-    MYSQL_RES *result = 0;
-    MYSQL_ROW row;
 
-    const char* Host = "localhost";
-    const char* User = "root";
-    const char* Pass = "12345";
-    const char* DBase = "messeneger";
 };
 
