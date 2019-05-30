@@ -12,7 +12,7 @@ public:
         size_ = 1024;
     }
 
-    Packet(uint8_t cod, uint32_t length, uint16_t ident, uint16_t item_count = 0)
+    Packet(uint8_t cod, uint32_t length = 9, uint16_t ident = 0, uint16_t item_count = 0)
     {
         buffer_ = (uint8_t*)malloc(1024);
         buffer_[0] = cod;
@@ -34,9 +34,9 @@ public:
     void init(uint8_t cod, uint32_t length, uint16_t ident, uint16_t item_count = 0)
     {
         buffer_[0] = cod;
-        *((uint32_t*)(buffer_ + 1)) = length;
-        *((uint16_t*)(buffer_ + 5)) = ident;
-        *((uint16_t*)(buffer_ + 7)) = item_count;
+        *((uint32_t*)(buffer_ + 1)) = htonl(length);
+        *((uint16_t*)(buffer_ + 5)) = htons(ident);
+        *((uint16_t*)(buffer_ + 7)) = htons(item_count);
         length_ = 9;
     }
 
@@ -74,6 +74,8 @@ public:
 
     uint16_t getItemCount() const { return *((uint16_t*)(buffer_ + 7)); }
 
+    uint16_t getIdent() const { return *((uint16_t*)(buffer_ + 5)); }
+
     void setItemCount(uint16_t item_count)
     {
         if (item_count > 0 && size_ > 7)
@@ -83,7 +85,7 @@ public:
         }
     }
 
-    void makeStringItem(uint8_t cod, const char* data, uint32_t len)
+    void makeStringItem(const char* data, uint32_t len)
     {
         if (size_ > length_ + len + 5)
         {
@@ -92,13 +94,14 @@ public:
                 printf("ERROR PACKET: are you sure that item count was setted?\n");
                 return;
             }
-            *((uint8_t*)(buffer_ + length_)) = cod;
+            *((uint8_t*)(buffer_ + length_)) = 1;
             length_ += 1;
             *((uint32_t*)(buffer_ + length_)) = len + 5;
             length_ += 4;
             std::memcpy(buffer_ + length_, data, len);
             length_ += len;
             incrementItemCount();
+            updateLength();
         }
         else
         {
@@ -106,7 +109,7 @@ public:
         }
     }
 
-    void makeCodItem(uint8_t cod, uint8_t codItem)
+    void makeCodItem(uint8_t codItem)
     {
         if (size_ > length_ + 6)
         {
@@ -115,18 +118,20 @@ public:
                 printf("ERROR PACKET: are you sure that item count was setted?\n");
                 return;
             }
-            *((uint8_t*)(buffer_ + length_)) = cod;
+            *((uint8_t*)(buffer_ + length_)) = 2;
             length_ += 1;
             *((uint32_t*)(buffer_ + length_)) = 6;
             length_ += 4;
             *((uint8_t*)(buffer_ + length_)) = codItem;
             length_ += 1;
             incrementItemCount();
+            updateLength();
         }
         else
         {
             printf("ERROR PACKET: not enough space for make cod item! Length: %d, size: %d\n", length_, size_);
         }
+        
     }
 
 private:
@@ -134,6 +139,9 @@ private:
     void incrementItemCount()
     {
         *((uint16_t*)(buffer_ + 7)) += 1;
+    }
+    void updateLength() {
+        *((uint32_t*)(buffer_ + 1)) = length_;
     }
 
     uint32_t length_;

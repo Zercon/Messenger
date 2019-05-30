@@ -15,7 +15,13 @@ public:
     ~Controller();
     void start();
 
-    bool query(std::string&&);
+    bool query(char*, int);
+
+    bool query_login(char * data, int len);
+
+    MYSQL_RES * query_list(char * data, int len);
+
+    MYSQL_RES * query_dial(char * data, int len);
 
 private:
     void accept_thread();
