@@ -99,10 +99,10 @@ void ClientController::DataOut()
 
 					switch (packet.getCod())
 					{
-					case 1: //registration
+					case 129: //registration
 						authorised = execute.RegistrationIn(packet);
 						break;
-					case 2: //authorisation
+					case 130: //authorisation
 						authorised = execute.AuthoriseIn(packet);
 						break;
 					default:
@@ -217,10 +217,10 @@ void ClientController::DataOut()
 
 						switch (packet.getCod())
 						{
-						case 1: //registration
+						case 129: //registration
 							authorised = execute.RegistrationIn(packet);
 							break;
-						case 2: //authorisation
+						case 130: //authorisation
 							authorised = execute.AuthoriseIn(packet);
 							break;
 						default:
@@ -245,15 +245,15 @@ void ClientController::DataOut()
 				/*
 						switch (packet.getCod())
 						{
-						case 3: //ping
+						case 131: //ping
 							break;
-						case 4: //contacts
+						case 132: //contacts
 							execute.ContactsCheckIn(packet);
 							break;
-						case 5: //history
+						case 133: //history
 							execute.HistoryCheckIn(execute.contacts[expected_login], packet);
 							break;
-						case 6: //message
+						case 134: //message
 
 							break;
 						default:
@@ -308,22 +308,22 @@ void ClientController::DataIn()
 
 							switch (cod)
 							{
-							case 1: //registration
+							case 129: //registration
 
 								break;
-							case 2: //authorisation
+							case 130: //authorisation
 
 								break;
-							case 3: //ping
+							case 131: //ping
 
 								break;
-							case 4: //contacts
+							case 132: //contacts
 
 								break;
-							case 5: //history
+							case 133: //history
 
 								break;
-							case 6: //message
+							case 134: //message
 
 								break;
 							default:
