@@ -34,9 +34,9 @@ public:
     void init(uint8_t cod, uint32_t length, uint16_t ident, uint16_t item_count = 0)
     {
         buffer_[0] = cod;
-        *((uint32_t*)(buffer_ + 1)) = htonl(length);
-        *((uint16_t*)(buffer_ + 5)) = htons(ident);
-        *((uint16_t*)(buffer_ + 7)) = htons(item_count);
+        *((uint32_t*)(buffer_ + 1)) = length;
+        *((uint16_t*)(buffer_ + 5)) = ident;
+        *((uint16_t*)(buffer_ + 7)) = item_count;
         length_ = 9;
     }
 
@@ -134,29 +134,45 @@ public:
         
     }
 
-    uint32_t getLengthItem(int ci) {
-        uint8_t* data = buffer_ + 9 + 1;
-        uint32_t len = 0;
-        for (int i = 0; i < ci; i++)
-        {
-            len = *((uint32_t*)(data + 1));
-            data += len + 5;
-        }
-        return len;
-    }
+	uint32_t getLengthItem(int ci) 
+	{
+		uint8_t* data = buffer_ + 9 + 1;
+		uint32_t len = 0;
+		for (int i = 0; i < ci; i++)
+		{
+			len = *((uint32_t*)(data + 1));
+			data += len + 5;
+		}
+		return len;
+	}
 
-    char* getStringItem(int ci) {
-        uint8_t* data = buffer_ + 9;
-        uint32_t len = 0;
-        char* str = (char*)buffer_ + 9+5;
-        for (int i = 0; i < ci; i++)
-        {
-            len = *((uint32_t*)(data + 1));
-            str = (char*)data + 5;
-            data += len + 5;
-        }
-        return str;
-    }
+	char* getStringItem(int ci) 
+	{
+		uint8_t* data = buffer_ + 9;
+		uint32_t len = 0;
+		char* info = NULL;
+		for (int i = 0; i < ci; i++)
+		{
+			len = *((uint32_t*)(data + 1));
+			info = (char*)data + 5;
+			data += len + 5;
+		}
+		return info;
+	}
+
+	int getCodItem(int ci) 
+	{
+		uint8_t* data = buffer_ + 9;
+		uint32_t len = 0;
+		int cod = 0;
+		for (int i = 0; i < ci; i++)
+		{
+			len = *((uint32_t*)(data + 1));
+			cod = (int)*(data);
+			data += len + 5;
+		}
+		return cod;
+	}
 
 private:
 
@@ -164,7 +180,9 @@ private:
     {
         *((uint16_t*)(buffer_ + 7)) += 1;
     }
-    void updateLength() {
+
+    void updateLength() 
+	{
         *((uint32_t*)(buffer_ + 1)) = length_;
     }
 
