@@ -92,6 +92,10 @@ void talk_to_client::process_request(Packet&& packet)
     {
         handle_request_diologe(std::move(packet));
     }
+    else if ((int)packet.getCod() ==6)
+    {
+        handle_message(std::move(packet));
+    }
     else
     {
         std::cout << "Error: invalid cod msg!" << std::endl;
@@ -117,6 +121,12 @@ void talk_to_client::handle_login(Packet && packet)
 {
     uint32_t len = *((uint32_t*)(packet.data() + 9 + 1));
     std::string login((char*)packet.data() + 9 + 5, len - 5);
+    if (login == "NONE")
+    {
+        std::cout << "Declien " << login << std::endl;
+        error_message(std::move(packet));
+        return;
+    }
     std::string pwd((char*)packet.data() + 9 + len + 5, *((uint32_t*)(packet.data() + 9 + len + 1)) - 5);
     std::string query = "SELECT * FROM messeneger.users WHERE login = '" + login + "' AND password = '" + pwd + "';";
     //std::string query = "SELECT * FROM messeneger.users;";
@@ -127,6 +137,7 @@ void talk_to_client::handle_login(Packet && packet)
         else
         {
             error_message(std::move(packet), 1);
+            username_ = login;
         }
     }
     catch (std::exception e) {
@@ -141,6 +152,12 @@ void talk_to_client::handle_ping(Packet && packet)
 
 void talk_to_client::handle_request_list(Packet && packet)
 {
+    if (username_ == "NONE")
+    {
+        std::cout << "Declien " << username_ << std::endl;
+        error_message(std::move(packet));
+        return;
+    }
     std::string query = "SELECT * FROM messeneger.users;";
     try {
         MYSQL_RES * res = controller_->query_list((char*)query.c_str(), query.length());
@@ -170,7 +187,12 @@ void talk_to_client::handle_request_list(Packet && packet)
 
 void talk_to_client::handle_request_diologe(Packet && packet)
 {
-
+    if (username_ == "NONE")
+    {
+        std::cout << "Declien " << username_ << std::endl;
+        error_message(std::move(packet));
+        return;
+    }
     uint32_t len = *((uint32_t*)(packet.data() + 9 + 1));
     std::string login((char*)packet.data() + 9 + 5, len - 5);
     std::string pwd((char*)packet.data() + 9 + len + 5, *((uint32_t*)(packet.data() + 9 + len + 1)) - 5);
@@ -199,6 +221,36 @@ void talk_to_client::handle_request_diologe(Packet && packet)
     catch (std::exception e) {
         error_message(std::move(packet));
     }
+}
+
+void talk_to_client::handle_message(Packet && packet)
+{
+    //uint32_t len = *((uint32_t*)(packet.data() + 9 + 1));
+    /*std::string login_to(packet.getStringItem(1), packet.getLengthItem(1));
+    std::string login_from(packet.getStringItem(2), packet.getLengthItem(2));
+    std::string text(packet.getStringItem(3), packet.getLengthItem(3));*/
+    uint32_t len = *((uint32_t*)(packet.data() + 9 + 1));
+    std::string login_to((char*)packet.data() + 9 + 5, len - 5);
+    std::string login_from((char*)packet.data() + 9 + len + 5, *((uint32_t*)(packet.data() + 9 + len + 1)) - 5);
+    len += *((uint32_t*)(packet.data() + 9 + len + 1));
+    std::string text((char*)packet.data() + 9 + len + 5, *((uint32_t*)(packet.data() + 9 + len + 1)) - 5);
+    if (login_from != username_)
+    {
+        std::cout << "Declien " << login_from << " " << username_ << std::endl;
+        error_message(std::move(packet));
+        return;
+    }
+    std::string query = "INSERT INTO `messeneger`.`messeges` (`to_user`, `from_user`, `create_time`, `content`) VALUES ('"+ login_to+"', '"+login_from+"', '10001', '"+text+"');";
+    //std::string query = "SELECT * FROM messeneger.users;";
+    try {
+        controller_->query((char*)query.c_str(), query.length());
+        controller_->write_mes_to(std::move(packet));
+        error_message(std::move(packet),1);
+    }
+    catch (std::exception e) {
+        error_message(std::move(packet));
+    }
+
 }
 
 void talk_to_client::error_message(Packet && packet, uint8_t cod)

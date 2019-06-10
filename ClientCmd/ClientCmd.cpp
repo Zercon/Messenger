@@ -48,7 +48,7 @@ void read_mes(tcp::socket & sock_)
     }
 }
 
-int main()
+int main(int argc, char** argv)
 {
     boost::asio::io_service io_service;
     tcp::endpoint endpoint(
@@ -56,8 +56,8 @@ int main()
     tcp::socket socket(io_service);
     socket.connect(endpoint);
     Packet packet(2, 9, 1, 0);
-    packet.makeStringItem("Tesr", 4);
-    packet.makeStringItem("Tes1", 4);
+    packet.makeStringItem("gortor", 6 /* sizeof(argv[0])/sizeof(char)*/);
+    packet.makeStringItem("1234", 4/*sizeof(argv[1])/sizeof(char)*/);
     std::string str((char*)packet.data(), packet.getLength());
     boost::asio::write(socket, boost::asio::buffer(str, str.length()));
     read_mes(socket);
@@ -70,11 +70,29 @@ int main()
     boost::asio::write(socket, boost::asio::buffer(str2, str2.length()));
     read_mes(socket);*/
     Packet packet3(5, 9, 4, 0);
-    packet3.makeStringItem("gortor", 6);
-    packet3.makeStringItem("test", 4);
+    packet3.makeStringItem("gortor", 6 /*sizeof(argv[0]) / sizeof(char)*/);
+    packet3.makeStringItem("test",  4/*sizeof(argv[3]) / sizeof(char)*/);
     std::string str3((char*)packet3.data(), packet3.getLength());
     boost::asio::write(socket, boost::asio::buffer(str3, str3.length()));
     read_mes(socket);
+    read_mes(socket);
+    Packet packet4(6, 9, 4, 0);
+    packet4.makeStringItem("test", 4/* sizeof(argv[0]) / sizeof(char)*/);
+    packet4.makeStringItem("gortor", 6/*sizeof(argv[3]) / sizeof(char)*/);
+    packet4.makeStringItem("messss", 6/*sizeof(argv[4]) / sizeof(char)*/);
+    std::string str4((char*)packet4.data(), packet4.getLength());
+    boost::asio::write(socket, boost::asio::buffer(str4, str4.length()));
+    read_mes(socket);
+    Packet packet5(5, 9, 4, 0);
+    packet5.makeStringItem("gortor", 6 /*sizeof(argv[0]) / sizeof(char)*/);
+    packet5.makeStringItem("test", 4/*sizeof(argv[3]) / sizeof(char)*/);
+    std::string str5((char*)packet5.data(), packet5.getLength());
+    boost::asio::write(socket, boost::asio::buffer(str5, str5.length()));
+
+    read_mes(socket);
+
+    read_mes(socket);
+
     read_mes(socket);
     std::cout << "Hello World!\n"; 
 }

@@ -7,7 +7,8 @@ class talk_to_client : public boost::enable_shared_from_this<talk_to_client>
 {
 public:
     talk_to_client(boost::asio::io_service& service, Controller *controller): sock_(service), controller_(controller) { 
-        
+        username_ = "NONE";
+        boost::posix_time::ptime last_ping = boost::posix_time::microsec_clock::local_time();
     }
     std::string username() const { return username_; }
     void answer_to_client();
@@ -16,6 +17,7 @@ public:
     bool timed_out() const;
     void stop();
     void read_request();
+    void write(Packet && packet);
 
 private:
     //function
@@ -26,9 +28,11 @@ private:
     void handle_request_list(Packet&& packet);
     void handle_request_diologe(Packet&& packet);
 
+    void handle_message(Packet && packet);
+
     void error_message(Packet && packet, uint8_t cod = 255);
 
-    void write(Packet && packet);
+    
 
     //std::shared_ptr<Packet> command;
     boost::asio::ip::tcp::socket sock_;

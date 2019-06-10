@@ -15,6 +15,8 @@ public:
     ~Controller();
     void start();
 
+    void write_mes_to(Packet && packet);
+
     bool query(char*, int);
 
     bool query_login(char * data, int len);
@@ -26,6 +28,8 @@ public:
 private:
     void accept_thread();
     void handle_clients_thread();
+
+    
 
     MYSQL *link;
 

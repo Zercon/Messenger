@@ -134,6 +134,30 @@ public:
         
     }
 
+    uint32_t getLengthItem(int ci) {
+        uint8_t* data = buffer_ + 9 + 1;
+        uint32_t len = 0;
+        for (int i = 0; i < ci; i++)
+        {
+            len = *((uint32_t*)(data + 1));
+            data += len + 5;
+        }
+        return len;
+    }
+
+    char* getStringItem(int ci) {
+        uint8_t* data = buffer_ + 9;
+        uint32_t len = 0;
+        char* str = (char*)buffer_ + 9+5;
+        for (int i = 0; i < ci; i++)
+        {
+            len = *((uint32_t*)(data + 1));
+            str = (char*)data + 5;
+            data += len + 5;
+        }
+        return str;
+    }
+
 private:
 
     void incrementItemCount()

@@ -229,3 +229,15 @@ void Controller::handle_clients_thread()
             boost::bind(&talk_to_client::timed_out, _1)), clients.end());
     }
 }
+
+void Controller::write_mes_to(Packet&& packet)
+{
+    std::string to(packet.getStringItem(1), packet.getLengthItem(1));
+    for (vector::iterator b = clients.begin(), e = clients.end(); b != e; ++b)
+    {
+        if ((*b)->username().compare(to))
+        {
+            (*b)->write(std::move(packet));
+        }
+    }
+}
