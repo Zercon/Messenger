@@ -17,13 +17,13 @@ public:
 
     void write_mes_to(Packet && packet);
 
-    bool query(char*, int);
+    /*bool query(char*, int);
 
     bool query_login(char * data, int len);
 
     MYSQL_RES * query_list(char * data, int len);
 
-    MYSQL_RES * query_dial(char * data, int len);
+    MYSQL_RES * query_dial(char * data, int len);*/
 
 private:
     void accept_thread();
@@ -31,7 +31,7 @@ private:
 
     
 
-    MYSQL *link;
+    //MYSQL *link;
 
 };
 

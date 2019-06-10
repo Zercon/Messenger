@@ -26,6 +26,4 @@
 #include <boost/thread.hpp>
 #include <boost/timer.hpp>
 
-#include "mysql.h"
-
 #endif //PCH_H

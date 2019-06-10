@@ -3,7 +3,7 @@
 
 Controller::Controller()
 {
-    link = mysql_init(0);
+    /*link = mysql_init(0);
     if (!link)
     {
         throw std::logic_error("Error: Невозможно получить дескриптор подключения к базе данных!");
@@ -11,13 +11,13 @@ Controller::Controller()
     if (!mysql_real_connect(link, "localhost", "root", "12345", "messeneger", 0, 0, 0))
     {
         throw std::logic_error("Невозможно подключиться к базе данных!");
-    }
+    }*/
 }
 
 
 Controller::~Controller()
 {
-    mysql_close(link);
+    /*mysql_close(link);*/
 }
 
 void Controller::start()
@@ -27,178 +27,178 @@ void Controller::start()
     threads.create_thread(boost::bind(&Controller::handle_clients_thread, this));
     threads.join_all();
 }
-
-bool Controller::query(char* data, int len)
-{
-    std::string query_str(data, len);
-    MYSQL_RES *result = 0;
-    MYSQL_ROW row;
-
-    std::cout << "Query: " << query_str << std::endl;
-
-    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, "use messeneger;") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, query_str.c_str()))
-        // c_str() для string возвращает char-строку
-    {
-        throw std::logic_error("Невозможно провести запрос!");
-    }
-
-    // Извлечение результата
-    result = mysql_store_result(link);
-    if (result)
-    {
-        
-        //throw std::logic_error("Извлечение результатов запроса завершилось аварийно!");
-        {
-            while (row = mysql_fetch_row(result))
-            {
-                for (int i = 0; i < mysql_num_fields(result); i++)
-                {
-                    std::cout << row[i] << std::endl;
-                }
-                
-            }
-        }
-    }
-    else
-    {
-        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
-    }
-    mysql_free_result(result);
-    return false;
-}
-
-bool Controller::query_login(char* data, int len)
-{
-    std::string query_str(data, len);
-    MYSQL_RES *result = 0;
-    MYSQL_ROW row;
-
-    std::cout << "Query: " << query_str << std::endl;
-
-    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, "use messeneger;") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, query_str.c_str()))
-        // c_str() для string возвращает char-строку
-    {
-        throw std::logic_error("Невозможно провести запрос!");
-    }
-
-    // Извлечение результата
-    result = mysql_store_result(link);
-    if (result)
-    {
-        mysql_free_result(result);
-        return true;
-    }
-    else
-    {
-        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
-    }
-    return false;
-}
-
-MYSQL_RES* Controller::query_list(char* data, int len)
-{
-    std::string query_str(data, len);
-    MYSQL_RES *result = 0;
-    MYSQL_ROW row;
-
-    std::cout << "Query: " << query_str << std::endl;
-
-    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, "use messeneger;") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, query_str.c_str()))
-        // c_str() для string возвращает char-строку
-    {
-        throw std::logic_error("Невозможно провести запрос!");
-    }
-
-    // Извлечение результата
-    result = mysql_store_result(link);
-    if (result)
-    {
-        return result;
-    }
-    else
-    {
-        return 0;
-        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
-    }
-    return 0;
-}
-
-MYSQL_RES* Controller::query_dial(char* data, int len)
-{
-    std::string query_str(data, len);
-    MYSQL_RES *result = 0;
-    MYSQL_ROW row;
-
-    std::cout << "Query: " << query_str << std::endl;
-
-    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, "use messeneger;") != 0)
-    {
-        mysql_close(link);
-        throw std::logic_error("Error: Невозможно провести запрос!");
-    }
-
-    if (mysql_query(link, query_str.c_str()))
-        // c_str() для string возвращает char-строку
-    {
-        throw std::logic_error("Невозможно провести запрос!");
-    }
-
-    // Извлечение результата
-    result = mysql_store_result(link);
-    if (result)
-    {
-        return result;
-    }
-    else
-    {
-        return 0;
-        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
-    }
-    return 0;
-}
-
+//
+//bool Controller::query(char* data, int len)
+//{
+//    std::string query_str(data, len);
+//    MYSQL_RES *result = 0;
+//    MYSQL_ROW row;
+//
+//    std::cout << "Query: " << query_str << std::endl;
+//
+//    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, "use messeneger;") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, query_str.c_str()))
+//        // c_str() для string возвращает char-строку
+//    {
+//        throw std::logic_error("Невозможно провести запрос!");
+//    }
+//
+//    // Извлечение результата
+//    result = mysql_store_result(link);
+//    if (result)
+//    {
+//        
+//        //throw std::logic_error("Извлечение результатов запроса завершилось аварийно!");
+//        {
+//            while (row = mysql_fetch_row(result))
+//            {
+//                for (int i = 0; i < mysql_num_fields(result); i++)
+//                {
+//                    std::cout << row[i] << std::endl;
+//                }
+//                
+//            }
+//        }
+//    }
+//    else
+//    {
+//        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
+//    }
+//    mysql_free_result(result);
+//    return false;
+//}
+//
+//bool Controller::query_login(char* data, int len)
+//{
+//    std::string query_str(data, len);
+//    MYSQL_RES *result = 0;
+//    MYSQL_ROW row;
+//
+//    std::cout << "Query: " << query_str << std::endl;
+//
+//    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, "use messeneger;") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, query_str.c_str()))
+//        // c_str() для string возвращает char-строку
+//    {
+//        throw std::logic_error("Невозможно провести запрос!");
+//    }
+//
+//    // Извлечение результата
+//    result = mysql_store_result(link);
+//    if (result)
+//    {
+//        mysql_free_result(result);
+//        return true;
+//    }
+//    else
+//    {
+//        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
+//    }
+//    return false;
+//}
+//
+//MYSQL_RES* Controller::query_list(char* data, int len)
+//{
+//    std::string query_str(data, len);
+//    MYSQL_RES *result = 0;
+//    MYSQL_ROW row;
+//
+//    std::cout << "Query: " << query_str << std::endl;
+//
+//    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, "use messeneger;") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, query_str.c_str()))
+//        // c_str() для string возвращает char-строку
+//    {
+//        throw std::logic_error("Невозможно провести запрос!");
+//    }
+//
+//    // Извлечение результата
+//    result = mysql_store_result(link);
+//    if (result)
+//    {
+//        return result;
+//    }
+//    else
+//    {
+//        return 0;
+//        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
+//    }
+//    return 0;
+//}
+//
+//MYSQL_RES* Controller::query_dial(char* data, int len)
+//{
+//    std::string query_str(data, len);
+//    MYSQL_RES *result = 0;
+//    MYSQL_ROW row;
+//
+//    std::cout << "Query: " << query_str << std::endl;
+//
+//    if (mysql_query(link, "SET NAMES 'cp1251'") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, "use messeneger;") != 0)
+//    {
+//        mysql_close(link);
+//        throw std::logic_error("Error: Невозможно провести запрос!");
+//    }
+//
+//    if (mysql_query(link, query_str.c_str()))
+//        // c_str() для string возвращает char-строку
+//    {
+//        throw std::logic_error("Невозможно провести запрос!");
+//    }
+//
+//    // Извлечение результата
+//    result = mysql_store_result(link);
+//    if (result)
+//    {
+//        return result;
+//    }
+//    else
+//    {
+//        return 0;
+//        std::cout << "Не найдено ни одной статьи этого автора" << std::endl;
+//    }
+//    return 0;
+//}
+//
 
 void Controller::accept_thread()
 {
