@@ -15,6 +15,10 @@
 #include <stdint.h>
 #include <memory>
 #include <cstring>
+#include <fstream>
+#include <stdio.h>
+#include <conio.h>
+//#include <Windows.h>
 
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
